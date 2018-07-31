@@ -159,13 +159,21 @@ var play = function () {
 
 var signIn = function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var data;
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
+            _context5.next = 2;
+            return _vscode.commands.executeCommand('vscode.open', _vscode.Uri.parse('https://vscodefy.netlify.com'));
+
+          case 2:
+            data = _context5.sent;
+
+            console.log(data);
             _pubsubJs2.default.publish('signIn', null);
 
-          case 1:
+          case 5:
           case 'end':
             return _context5.stop();
         }
@@ -177,6 +185,8 @@ var signIn = function () {
     return _ref5.apply(this, arguments);
   };
 }();
+
+var _vscode = require('vscode');
 
 var _axios = require('axios');
 

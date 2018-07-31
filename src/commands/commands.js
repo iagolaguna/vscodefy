@@ -1,3 +1,4 @@
+import { commands, Uri } from 'vscode';
 import axios from 'axios';
 import PubSub from 'pubsub-js';
 const token = 'BQCi7H5G_gWYBYP1-iJLtpaOWNeAWdXPqCTxtItro5YlEGytuP9Ywo3WOEpYP-R9rzdAmp4zd0Zi2Lpt1K9tp07SJvJT0yuHWHG4dRd1w0bSy_PJ_igcpKqEJF_QhymaE6p5W5h4TMU58OhOTH6oS-Z4inmDfPiNN-mM';
@@ -62,7 +63,10 @@ async function play () {
 }
 
 async function signIn () {
-  PubSub.publish('signIn', null)
+  const data = await commands.executeCommand('vscode.open', Uri.parse('https://vscodefy.netlify.com'))
+  console.log(data);
+  //TODO a view pode ser mudada só após de um login efetuado com sucesso
+  // PubSub.publish('signIn', null)
 }
 
 export {
