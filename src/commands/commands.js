@@ -63,10 +63,14 @@ async function play () {
 }
 
 async function signIn () {
-  const data = await commands.executeCommand('vscode.open', Uri.parse('https://vscodefy.netlify.com'))
+  const data = await commands.executeCommand('vscode.open', Uri.parse('http://localhost:8080'))
   console.log(data);
-  //TODO a view pode ser mudada só após de um login efetuado com sucesso
+  // TODO a view pode ser mudada só após de um login efetuado com sucesso
   // PubSub.publish('signIn', null)
+}
+
+async function handleUri (uri) {
+  console.log(uri);
 }
 
 export {
@@ -74,5 +78,6 @@ export {
   next,
   pause,
   play,
-  signIn
+  signIn,
+  handleUri
 };

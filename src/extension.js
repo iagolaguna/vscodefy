@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import PubSub from 'pubsub-js';
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode';
-import { play, pause, next, previous, signIn } from './commands/commands';
+import { play, pause, next, previous, signIn, handleUri } from './commands/commands';
 
 function activate ({ subscriptions }) {
   const commandsRegistered = [
@@ -52,6 +52,10 @@ function activate ({ subscriptions }) {
       });
     subscriptions.push(StatusBarButtons);
   });
+
+  // @ts-ignore
+  window.registerProtocolHandler(handleUri);
+  // subscriptions.push(handleUriDisposable);
   // subscriptions.push(StatusBarButtons);
   // subscriptions.push(Disposable.from(...reference));
 }
