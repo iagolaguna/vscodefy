@@ -1,4 +1,4 @@
-import { commands, Uri } from 'vscode';
+import { commands, window, Uri } from 'vscode';
 import axios from 'axios';
 import PubSub from 'pubsub-js';
 const token = 'BQCi7H5G_gWYBYP1-iJLtpaOWNeAWdXPqCTxtItro5YlEGytuP9Ywo3WOEpYP-R9rzdAmp4zd0Zi2Lpt1K9tp07SJvJT0yuHWHG4dRd1w0bSy_PJ_igcpKqEJF_QhymaE6p5W5h4TMU58OhOTH6oS-Z4inmDfPiNN-mM';
@@ -69,8 +69,20 @@ async function signIn () {
   // PubSub.publish('signIn', null)
 }
 
-async function handleUri (uri) {
-  console.log(uri);
+async function getCode (uri) {
+  try {
+    const code = await window.showInputBox()
+    const { data: authorization } = await authorize(code);
+    // TODO save in local disk credentials information
+    // TODO create a trigger for refresh token
+    console.log(authorization);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function authorize (code) {
+  return axios.get(`http://localhost:8095/api/authorize?code=${code}`);
 }
 
 export {
@@ -79,5 +91,5 @@ export {
   pause,
   play,
   signIn,
-  handleUri
+  getCode
 };

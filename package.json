@@ -35,6 +35,9 @@
       {
         "command": "vscodefy.signIn",
         "title": "Spotify Logar"
+      },{
+        "command": "vscodefy.getCode",
+        "title": "Inserir código oauth do spotify"
       }
     ]
   },
