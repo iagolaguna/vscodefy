@@ -2,6 +2,9 @@ import 'babel-polyfill';
 import PubSub from 'pubsub-js';
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode';
 import { play, pause, next, previous, signIn, getCode } from './commands/commands';
+import axiosConfig from './axios-config';
+
+axiosConfig();
 
 function activate ({ subscriptions }) {
   const commandsRegistered = [

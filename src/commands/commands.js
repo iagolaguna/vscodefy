@@ -66,7 +66,7 @@ async function signIn () {
   const data = await commands.executeCommand('vscode.open', Uri.parse('http://localhost:8080'))
   console.log(data);
   // TODO a view pode ser mudada só após de um login efetuado com sucesso
-  // PubSub.publish('signIn', null)
+  PubSub.publish('signIn', null)
 }
 
 async function getCode (uri) {
@@ -85,11 +85,15 @@ async function authorize (code) {
   return axios.get(`http://localhost:8095/api/authorize?code=${code}`);
 }
 
+async function refreshToken () {
+  return axios.get(`http://localhost:8095/api/refreshToken?refreshToken=${code}`);
+}
 export {
   previous,
   next,
   pause,
   play,
   signIn,
-  getCode
+  getCode,
+  refreshToken
 };
