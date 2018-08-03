@@ -1,10 +1,10 @@
-import 'babel-polyfill';
-import PubSub from 'pubsub-js';
-import { window, commands, Disposable, StatusBarAlignment } from 'vscode';
-import { play, pause, next, previous, signIn, getCode } from './commands/commands';
-import axiosConfig from './axios-config';
+import 'babel-polyfill'
+import PubSub from 'pubsub-js'
+import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
+import { play, pause, next, previous, signIn, getCode } from './commands/commands'
+import axiosConfig from './axios-config'
 
-axiosConfig();
+axiosConfig()
 
 function activate ({ subscriptions }) {
   const commandsRegistered = [
@@ -32,33 +32,33 @@ function activate ({ subscriptions }) {
       command: 'vscodefy.getCode',
       action: getCode
     }
-  ];
+  ]
 
   const reference = commandsRegistered
-    .map(({ command, action }) => commands.registerCommand(command, action));
-  subscriptions.push(Disposable.from(...reference));
+    .map(({ command, action }) => commands.registerCommand(command, action))
+  subscriptions.push(Disposable.from(...reference))
 
-  const siginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11);
-  siginStatusBar.text = 'Sing In';
-  siginStatusBar.command = 'vscodefy.signIn';
-  siginStatusBar.tooltip = 'Entrar no Spotify';
-  siginStatusBar.show();
+  const siginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
+  siginStatusBar.text = 'Sing In'
+  siginStatusBar.command = 'vscodefy.signIn'
+  siginStatusBar.tooltip = 'Entrar no Spotify'
+  siginStatusBar.show()
 
   PubSub.subscribe('signIn', () => {
-    console.log('signIn called');
-    siginStatusBar.hide();
-    siginStatusBar.dispose();
+    console.log('signIn called')
+    siginStatusBar.hide()
+    siginStatusBar.dispose()
     const StatusBarButtons = buttonsInfo
       .map(({ text, priority, buttonCommand, tooltip }) => {
-        const status = window.createStatusBarItem(StatusBarAlignment.Left, priority);
-        status.text = text;
-        status.command = buttonCommand;
+        const status = window.createStatusBarItem(StatusBarAlignment.Left, priority)
+        status.text = text
+        status.command = buttonCommand
         status.tooltip = tooltip
-        status.show();
-        return status;
-      });
-    subscriptions.push(StatusBarButtons);
-  });
+        status.show()
+        return status
+      })
+    subscriptions.push(StatusBarButtons)
+  })
   // subscriptions.push(StatusBarButtons);
   // subscriptions.push(Disposable.from(...reference));
 }
@@ -101,4 +101,4 @@ const buttonsInfo = [
     tooltip: 'Previoues',
     buttonCommand: 'vscodefy.previous'
   }
-];
+]
