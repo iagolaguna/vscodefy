@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { refreshToken } from './commands/commands'
-function axiosConfig () {
+import { getAuthContentFromData } from './utils'
+function axiosConfig (context) {
   axios.interceptors.response.use(null, async error => {
     console.log(error)
     const { config: { url, method, data }, response: { status } } = error
@@ -8,7 +9,14 @@ function axiosConfig () {
     if (status !== 401 || url.includes('refreshToken')) {
       return Promise.reject(error)
     }
-    await refreshToken()
+    const cache = context.globalState.get('cache')
+    const { data: authorization } = await refreshToken(cache.refreshToken)
+    const authContent = getAuthContentFromData(authorization)
+    Object.assign(cache, authContent)
+    context.globalState.update('cache', cache)
+    const { tokenType, accessToken } = cache
+    axios.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`
+
     axios({
       method,
       url,

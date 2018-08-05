@@ -2,38 +2,12 @@ import 'babel-polyfill'
 import PubSub from 'pubsub-js'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
 import { play, pause, next, previous, signIn, getCode } from './commands/commands'
+import { getAuthContentFromData } from './utils'
 import axios from 'axios'
 import axiosConfig from './axios-config'
 
 function activate (context) {
-  axiosConfig()
-
-  const commandsRegistered = [
-    {
-      command: 'vscodefy.next',
-      action: next
-    },
-    {
-      command: 'vscodefy.previous',
-      action: previous
-    },
-    {
-      command: 'vscodefy.play',
-      action: play
-    },
-    {
-      command: 'vscodefy.pause',
-      action: pause
-    },
-    {
-      command: 'vscodefy.signIn',
-      action: signIn
-    },
-    {
-      command: 'vscodefy.getCode',
-      action: getCode
-    }
-  ]
+  axiosConfig(context)
 
   const reference = commandsRegistered
     .map(({ command, action }) => commands.registerCommand(command, action))
@@ -46,8 +20,10 @@ function activate (context) {
   siginStatusBar.show()
 
   PubSub.subscribe('signIn', (message, data) => {
-    context.globalState.update('cache', data)
-    const { token_type: tokenType, access_token: accessToken } = data
+    const authContent = getAuthContentFromData(data)
+    context.globalState.update('cache', authContent)
+    const {tokenType, accessToken} = authContent
+    // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
     axios.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`
     siginStatusBar.hide()
     siginStatusBar.dispose()
@@ -62,6 +38,7 @@ function activate (context) {
       })
     context.subscriptions.push(StatusBarButtons)
   })
+
   const cache = context.globalState.get('cache')
   if (cache && cache !== {}) {
     PubSub.publish('signIn', cache)
@@ -103,7 +80,34 @@ const buttonsInfo = [
     id: 'previous',
     text: '$(chevron-left)',
     priority: 11,
-    tooltip: 'Previoues',
+    tooltip: 'Previous',
     buttonCommand: 'vscodefy.previous'
+  }
+]
+
+const commandsRegistered = [
+  {
+    command: 'vscodefy.next',
+    action: next
+  },
+  {
+    command: 'vscodefy.previous',
+    action: previous
+  },
+  {
+    command: 'vscodefy.play',
+    action: play
+  },
+  {
+    command: 'vscodefy.pause',
+    action: pause
+  },
+  {
+    command: 'vscodefy.signIn',
+    action: signIn
+  },
+  {
+    command: 'vscodefy.getCode',
+    action: getCode
   }
 ]
