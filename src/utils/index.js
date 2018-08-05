@@ -8,3 +8,6 @@ export function getAuthContentFromData (data) {
   !authContent.refreshToken && delete authContent.refreshToken
   return authContent
 }
+export function validCache ({ tokenType, accessToken, refreshToken }) {
+  return !!tokenType && !!accessToken && !!refreshToken
+}

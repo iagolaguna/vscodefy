@@ -2,7 +2,7 @@ import 'babel-polyfill'
 import PubSub from 'pubsub-js'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
 import { play, pause, next, previous, signIn, getCode } from './commands/commands'
-import { getAuthContentFromData } from './utils'
+import { getAuthContentFromData, validCache } from './utils'
 import axios from 'axios'
 import axiosConfig from './axios-config'
 
@@ -40,7 +40,7 @@ function activate (context) {
   })
 
   const cache = context.globalState.get('cache')
-  if (cache && cache !== {}) {
+  if (validCache(cache)) {
     PubSub.publish('signIn', cache)
   }
 }
