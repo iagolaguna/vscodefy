@@ -2,11 +2,12 @@ import 'babel-polyfill'
 import PubSub from 'pubsub-js'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
 import { play, pause, next, previous, signIn, getCode } from './commands/commands'
+import axios from 'axios'
 import axiosConfig from './axios-config'
 
-axiosConfig()
+function activate (context) {
+  axiosConfig()
 
-function activate ({ subscriptions }) {
   const commandsRegistered = [
     {
       command: 'vscodefy.next',
@@ -36,7 +37,7 @@ function activate ({ subscriptions }) {
 
   const reference = commandsRegistered
     .map(({ command, action }) => commands.registerCommand(command, action))
-  subscriptions.push(Disposable.from(...reference))
+  context.subscriptions.push(Disposable.from(...reference))
 
   const siginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
   siginStatusBar.text = 'Sing In'
@@ -44,8 +45,10 @@ function activate ({ subscriptions }) {
   siginStatusBar.tooltip = 'Entrar no Spotify'
   siginStatusBar.show()
 
-  PubSub.subscribe('signIn', () => {
-    console.log('signIn called')
+  PubSub.subscribe('signIn', (message, data) => {
+    context.globalState.update('cache', data)
+    const { token_type: tokenType, access_token: accessToken } = data
+    axios.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`
     siginStatusBar.hide()
     siginStatusBar.dispose()
     const StatusBarButtons = buttonsInfo
@@ -57,10 +60,12 @@ function activate ({ subscriptions }) {
         status.show()
         return status
       })
-    subscriptions.push(StatusBarButtons)
+    context.subscriptions.push(StatusBarButtons)
   })
-  // subscriptions.push(StatusBarButtons);
-  // subscriptions.push(Disposable.from(...reference));
+  const cache = context.globalState.get('cache')
+  if (cache && cache !== {}) {
+    PubSub.publish('signIn', cache)
+  }
 }
 
 // this method is called when your extension is deactivated
