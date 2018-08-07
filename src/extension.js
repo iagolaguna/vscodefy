@@ -22,33 +22,45 @@ function activate (context) {
   PubSub.subscribe('signIn', (message, data) => {
     const authContent = getAuthContentFromData(data)
     context.globalState.update('cache', authContent)
-    const {tokenType, accessToken} = authContent
     // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
-    axios.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`
-    siginStatusBar.hide()
-    siginStatusBar.dispose()
-    const StatusBarButtons = buttonsInfo
-      .map(({ text, priority, buttonCommand, tooltip }) => {
-        const status = window.createStatusBarItem(StatusBarAlignment.Left, priority)
-        status.text = text
-        status.command = buttonCommand
-        status.tooltip = tooltip
-        status.show()
-        return status
-      })
-    context.subscriptions.push(StatusBarButtons)
+    setup(authContent, siginStatusBar, context)
   })
-
+  const statusCurrentMusic = window.createStatusBarItem(StatusBarAlignment.Left, 7)
+  statusCurrentMusic.text = 'Current Music'
+  statusCurrentMusic.tooltip = 'Current Music'
+  statusCurrentMusic.hide()
+  PubSub.subscribe('current-track', (message, data) => {
+    const { name } = data
+    statusCurrentMusic.text = name
+    statusCurrentMusic.tooltip = name
+    statusCurrentMusic.show()
+  })
   const cache = context.globalState.get('cache')
   if (validCache(cache)) {
-    PubSub.publish('signIn', cache)
+    setup(cache, siginStatusBar, context)
   }
 }
 
 // this method is called when your extension is deactivated
 function deactivate () {
 }
-
+function setup (authContent, siginStatusBar, context) {
+  const { tokenType, accessToken } = authContent
+  // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
+  axios.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`
+  siginStatusBar.hide()
+  siginStatusBar.dispose()
+  const StatusBarButtons = buttonsInfo
+    .map(({ text, priority, buttonCommand, tooltip }) => {
+      const status = window.createStatusBarItem(StatusBarAlignment.Left, priority)
+      status.text = text
+      status.command = buttonCommand
+      status.tooltip = tooltip
+      status.show()
+      return status
+    })
+  context.subscriptions.push(StatusBarButtons)
+}
 export {
   activate,
   deactivate
