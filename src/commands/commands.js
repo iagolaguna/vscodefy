@@ -31,8 +31,12 @@ async function play () {
       .put(`${spotifyUrl}/play`, {})
     getCurrentTrackAsync()
     PubSub.publish('play', null)
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    const { response: { status } } = error
+    if (status === 404) {
+      await pickDevice()
+      play()
+    }
   }
 }
 
@@ -41,23 +45,38 @@ async function pause () {
     await axios
       .put(`${spotifyUrl}/pause`, {})
     PubSub.publish('pause', null)
+    getCurrentTrackAsync()
   } catch (err) {
     console.log(err)
   }
 }
 
+async function getAvailableDevices () {
+  const { data: { devices } } = await axios.get(`${spotifyUrl}/devices`)
+  return devices
+}
+
 function getCurrentTrackAsync () {
-  setTimeout(() => getCurrentTrack(), 1000)
+  setTimeout(() => getCurrentTrack(), 500)
 }
 
 async function getCurrentTrack () {
-  const { data: { progress_ms: progressMs, item: { duration_ms: durationMs, name } } } = await axios
-    .get(`${spotifyUrl}/currently-playing`, {})
-  PubSub.publish('current-track', { progressMs, durationMs, name })
+  const response = await axios.get(`${spotifyUrl}/currently-playing`, {})
+  const {
+    data: {
+      progress_ms: progressMs,
+      is_playing: isPlaying,
+      item: {
+        duration_ms: durationMs,
+        name
+      }
+    }
+  } = response
+  PubSub.publish('current-track', { progressMs, durationMs, name, isPlaying })
 }
 
 async function signIn () {
-  commands.executeCommand('vscode.open', Uri.parse('https://vscodefy.netlify.com/'))
+  commands.executeCommand('vscode.open', Uri.parse('http://localhost:8080'))
 }
 
 async function getCode () {
@@ -70,9 +89,24 @@ async function authorize (code) {
   return axios.get(`http://localhost:8095/api/authorize?code=${code}`)
 }
 
-async function getDevice () {
-  const deviceSelected = await window.showQuickPick(['Mobile', 'Desktop', 'Web'])
-  return deviceSelected
+async function pickDevice () {
+  const deviceNotFound = () => window.showInformationMessage('Not found any available device, please connect on spotify in someone device')
+  const devices = await getAvailableDevices()
+
+  if (!devices.length) {
+    deviceNotFound()
+    return
+  }
+  const deviceSelected = await window.showQuickPick(devices.map(({ name }) => name))
+  const device = devices.find(({ name }) => name === deviceSelected)
+  if (!device) {
+    return
+  }
+  if (!device.id) {
+    deviceNotFound()
+    return
+  }
+  await axios.put(spotifyUrl, { 'device_ids': [device.id] })
 }
 
 async function refreshToken (refreshToken) {
@@ -87,5 +121,6 @@ export {
   signIn,
   getCode,
   refreshToken,
-  getDevice
+  pickDevice,
+  getCurrentTrackAsync
 }

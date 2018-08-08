@@ -35,15 +35,20 @@
       {
         "command": "vscodefy.signIn",
         "title": "Spotify Logar"
-      },{
+      },
+      {
         "command": "vscodefy.getCode",
         "title": "Inserir código oauth do spotify"
+      },
+      {
+        "command": "vscodefy.pickDevice",
+        "title": "Pick a device"
       }
     ]
   },
   "scripts": {
     "linter": "eslint src",
-    "build": "babel src -s -D -d dist",
+    "build": "babel src --source-maps -D -d dist",
     "vscode:prepublish": "npm run build",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test"

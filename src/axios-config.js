@@ -3,7 +3,6 @@ import { refreshToken } from './commands/commands'
 import { getAuthContentFromData } from './utils'
 function axiosConfig (context) {
   axios.interceptors.response.use(null, async error => {
-    console.log(error)
     const { config: { url, method, data }, response: { status } } = error
     if (status !== 401 || url.includes('refreshToken')) {
       return Promise.reject(error)

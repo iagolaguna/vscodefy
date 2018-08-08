@@ -1,11 +1,17 @@
 import 'babel-polyfill'
 import PubSub from 'pubsub-js'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
-import { play, pause, next, previous, signIn, getCode } from './commands/commands'
+import { play, pause, next, previous, signIn, getCode, getCurrentTrackAsync, pickDevice } from './commands/commands'
 import { getAuthContentFromData, validCache } from './utils'
 import axios from 'axios'
 import axiosConfig from './axios-config'
 
+let refreshStatusId
+
+// this method is called when your extension is deactivated
+function deactivate () {
+  clearInterval(refreshStatusId)
+}
 function activate (context) {
   axiosConfig(context)
 
@@ -25,25 +31,13 @@ function activate (context) {
     // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
     setup(authContent, siginStatusBar, context)
   })
-  const statusCurrentMusic = window.createStatusBarItem(StatusBarAlignment.Left, 7)
-  statusCurrentMusic.text = 'Current Music'
-  statusCurrentMusic.tooltip = 'Current Music'
-  statusCurrentMusic.hide()
-  PubSub.subscribe('current-track', (message, data) => {
-    const { name } = data
-    statusCurrentMusic.text = name
-    statusCurrentMusic.tooltip = name
-    statusCurrentMusic.show()
-  })
+
   const cache = context.globalState.get('cache')
   if (validCache(cache)) {
     setup(cache, siginStatusBar, context)
   }
 }
 
-// this method is called when your extension is deactivated
-function deactivate () {
-}
 function setup (authContent, siginStatusBar, context) {
   const { tokenType, accessToken } = authContent
   // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
@@ -59,7 +53,31 @@ function setup (authContent, siginStatusBar, context) {
       status.show()
       return status
     })
+  const statusCurrentMusic = window.createStatusBarItem(StatusBarAlignment.Left, 7)
+  statusCurrentMusic.text = 'Current Music'
+  statusCurrentMusic.tooltip = 'Current Music'
+  statusCurrentMusic.hide()
+
+  const pauseButton = StatusBarButtons.find(({ command }) => command === 'vscodefy.pause')
+  const playButton = StatusBarButtons.find(({ command }) => command === 'vscodefy.play')
+  const switchStatusButton = (isPlaying) => {
+    if (isPlaying) {
+      playButton.hide()
+      pauseButton.show()
+    } else {
+      pauseButton.hide()
+      playButton.show()
+    }
+  }
+  PubSub.subscribe('current-track', (message, data) => {
+    const { name, isPlaying } = data
+    statusCurrentMusic.text = `$(unmute)  ${name}`
+    statusCurrentMusic.tooltip = name
+    statusCurrentMusic.show()
+    switchStatusButton(isPlaying)
+  })
   context.subscriptions.push(StatusBarButtons)
+  refreshStatusId = setInterval(() => getCurrentTrackAsync(), 5000)
 }
 export {
   activate,
@@ -69,28 +87,28 @@ export {
 const buttonsInfo = [
   {
     id: 'next',
-    text: '$(chevron-right)',
+    text: ' $(chevron-right) ',
     priority: 8,
     tooltip: 'Next',
     buttonCommand: 'vscodefy.next'
   },
   {
     id: 'play',
-    text: '$(triangle-right)',
+    text: ' $(triangle-right) ',
     priority: 9,
     tooltip: 'Play',
     buttonCommand: 'vscodefy.play'
   },
   {
     id: 'pause',
-    text: '$(primitive-square)',
+    text: ' $(primitive-square) ',
     priority: 10,
     tooltip: 'Pause',
     buttonCommand: 'vscodefy.pause'
   },
   {
     id: 'previous',
-    text: '$(chevron-left)',
+    text: ' $(chevron-left) ',
     priority: 11,
     tooltip: 'Previous',
     buttonCommand: 'vscodefy.previous'
@@ -121,5 +139,9 @@ const commandsRegistered = [
   {
     command: 'vscodefy.getCode',
     action: getCode
+  },
+  {
+    command: 'vscodefy.pickDevice',
+    action: pickDevice
   }
 ]
