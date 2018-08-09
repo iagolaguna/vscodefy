@@ -1,49 +1,72 @@
 import 'babel-polyfill'
 import PubSub from 'pubsub-js'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
-import { play, pause, next, previous, signIn, getCode, getCurrentTrackAsync, pickDevice } from './commands/commands'
+import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice } from './commands/commands'
 import { getAuthContentFromData, validCache } from './utils'
 import axios from 'axios'
 import axiosConfig from './axios-config'
 
 let refreshStatusId
-
-// this method is called when your extension is deactivated
-function deactivate () {
+let allStatusBar
+let loginStatusBar
+let configureStatusBar
+function logout () {
+  if (!validCache(this.globalState.get('cache'))) {
+    return
+  }
   clearInterval(refreshStatusId)
+  this.globalState.update('cache', null)
+  allStatusBar.map(status => status.dispose())
+  loginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
+  loginStatusBar.text = '$(sign-in) Login'
+  loginStatusBar.command = 'vscodefy.login'
+  loginStatusBar.tooltip = 'Login on Spotify'
+  loginStatusBar.show()
+  configureStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 10)
+  configureStatusBar.text = '$(gear) Configure'
+  configureStatusBar.command = 'vscodefy.getCode'
+  configureStatusBar.tooltip = 'Configure OAuth Spotify Code'
+  configureStatusBar.show()
+  this.subscriptions.push(Disposable.from(loginStatusBar, configureStatusBar))
 }
+
 function activate (context) {
   axiosConfig(context)
 
   const reference = commandsRegistered
-    .map(({ command, action }) => commands.registerCommand(command, action))
-  context.subscriptions.push(Disposable.from(...reference))
+    .map(({ command, action }) => commands.registerCommand(command, action, context))
 
-  const siginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
-  siginStatusBar.text = 'Sing In'
-  siginStatusBar.command = 'vscodefy.signIn'
-  siginStatusBar.tooltip = 'Entrar no Spotify'
-  siginStatusBar.show()
+  loginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
+  loginStatusBar.text = '$(sign-in) Login'
+  loginStatusBar.command = 'vscodefy.login'
+  loginStatusBar.tooltip = 'Login on Spotify'
+  loginStatusBar.show()
+
+  configureStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 10)
+  configureStatusBar.text = '$(gear) Configure'
+  configureStatusBar.command = 'vscodefy.getCode'
+  configureStatusBar.tooltip = 'Configure OAuth Spotify Code'
+  configureStatusBar.show()
 
   PubSub.subscribe('signIn', (message, data) => {
     const authContent = getAuthContentFromData(data)
     context.globalState.update('cache', authContent)
-    // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
-    setup(authContent, siginStatusBar, context)
+    setup(authContent, context)
   })
 
+  context.subscriptions.push(Disposable.from(...reference, loginStatusBar, configureStatusBar))
   const cache = context.globalState.get('cache')
   if (validCache(cache)) {
-    setup(cache, siginStatusBar, context)
+    setup(cache, context)
   }
 }
 
-function setup (authContent, siginStatusBar, context) {
+function setup (authContent, context) {
   const { tokenType, accessToken } = authContent
-  // axios.defaults.headers.common['Authorization'] = 'Bearer BQCTwUN8NgygotO4UGWPG7G9yz8KNs5VCcXaG5540e0dz39HBgMH-bDY2kZcI7OAvJtGGASDOHDC-BzH9EQSyibebCOXJHRYX1ygjL6xqcek_xRtTEaBK-atMpNTqWfmTuz9twFVxcmg6SozPPtjOegZ3jNvnW2fKwfR'
   axios.defaults.headers.common['Authorization'] = `${tokenType} ${accessToken}`
-  siginStatusBar.hide()
-  siginStatusBar.dispose()
+
+  loginStatusBar.dispose()
+  configureStatusBar.dispose()
   const StatusBarButtons = buttonsInfo
     .map(({ text, priority, buttonCommand, tooltip }) => {
       const status = window.createStatusBarItem(StatusBarAlignment.Left, priority)
@@ -69,19 +92,20 @@ function setup (authContent, siginStatusBar, context) {
       playButton.show()
     }
   }
-  PubSub.subscribe('current-track', (message, data) => {
-    const { name, isPlaying } = data
-    statusCurrentMusic.text = `$(unmute)  ${name}`
-    statusCurrentMusic.tooltip = name
+  PubSub.subscribe('current-track', (message, { name = undefined, isPlaying = false }) => {
+    statusCurrentMusic.text = name ? `$(unmute)  ${name}` : ''
+    statusCurrentMusic.tooltip = name || ''
     statusCurrentMusic.show()
     switchStatusButton(isPlaying)
   })
-  context.subscriptions.push(StatusBarButtons)
+  PubSub.publishSync('current-track', {})
+
   refreshStatusId = setInterval(() => getCurrentTrackAsync(), 5000)
+  allStatusBar = [...StatusBarButtons, statusCurrentMusic]
+  context.subscriptions.push(Disposable.from(...allStatusBar))
 }
 export {
-  activate,
-  deactivate
+  activate
 }
 
 const buttonsInfo = [
@@ -133,8 +157,8 @@ const commandsRegistered = [
     action: pause
   },
   {
-    command: 'vscodefy.signIn',
-    action: signIn
+    command: 'vscodefy.login',
+    action: login
   },
   {
     command: 'vscodefy.getCode',
@@ -143,5 +167,9 @@ const commandsRegistered = [
   {
     command: 'vscodefy.pickDevice',
     action: pickDevice
+  },
+  {
+    command: 'vscodefy.logout',
+    action: logout
   }
 ]

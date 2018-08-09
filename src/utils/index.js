@@ -1,4 +1,4 @@
-export function getAuthContentFromData (data) {
+export function getAuthContentFromData (data = {}) {
   const {
     token_type: tokenType,
     access_token: accessToken,
@@ -10,6 +10,6 @@ export function getAuthContentFromData (data) {
   }
   return authContent
 }
-export function validCache ({ tokenType, accessToken, refreshToken }) {
-  return !!tokenType && !!accessToken && !!refreshToken
+export function validCache (data) {
+  return data && (!!data.tokenType && !!data.accessToken && !!data.refreshToken)
 }

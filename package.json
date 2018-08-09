@@ -18,31 +18,35 @@
     "commands": [
       {
         "command": "vscodefy.next",
-        "title": "Spotify Play Next Song"
+        "title": "Spotify: Play Next Song"
       },
       {
         "command": "vscodefy.previous",
-        "title": "Spotify Play Previous Song"
+        "title": "Spotify: Play Previous Song"
       },
       {
         "command": "vscodefy.play",
-        "title": "Spotify Play"
+        "title": "Spotify: Play Song"
       },
       {
         "command": "vscodefy.pause",
-        "title": "Spotify Pause"
+        "title": "Spotify: Pause Song"
       },
       {
-        "command": "vscodefy.signIn",
-        "title": "Spotify Logar"
+        "command": "vscodefy.login",
+        "title": "Spotify: Login"
       },
       {
         "command": "vscodefy.getCode",
-        "title": "Inserir código oauth do spotify"
+        "title": "Spotify: Set OAuth Code"
       },
       {
         "command": "vscodefy.pickDevice",
-        "title": "Pick a device"
+        "title": "Spotify: Pick a device"
+      },
+      {
+        "command": "vscodefy.logout",
+        "title": "Spotify: Logout"
       }
     ]
   },
