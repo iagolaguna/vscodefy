@@ -1,9 +1,9 @@
 import { commands, window, Uri } from 'vscode'
 import axios from 'axios'
 import PubSub from 'pubsub-js'
-import { validCache } from '../utils'
+import { isLogged } from '../utils'
 const spotifyUrl = 'https://api.spotify.com/v1/me/player'
-
+const vscodefyServer = 'https://vscodefy.herokuapp.com/api'
 async function next () {
   try {
     await axios
@@ -80,7 +80,7 @@ async function login () {
 
 async function getCode () {
   const code = await window.showInputBox()
-  if (!code || validCache(this.globalState.get('cache'))) {
+  if (!code || isLogged(this.globalState.get('cache'))) {
     return
   }
   const { data: authorization } = await authorize(code)
@@ -92,7 +92,7 @@ async function getCode () {
 }
 
 async function authorize (code) {
-  return axios.get(`http://localhost:8095/api/authorize?code=${code}`)
+  return axios.get(`${vscodefyServer}/authorize?code=${code}`)
 }
 
 async function pickDevice () {
@@ -118,7 +118,7 @@ async function pickDevice () {
 }
 
 async function refreshToken (refreshToken) {
-  return axios.get(`http://localhost:8095/api/refreshToken?refreshToken=${refreshToken}`)
+  return axios.get(`${vscodefyServer}/refreshToken?refreshToken=${refreshToken}`)
 }
 
 async function handler (error, callback = () => Promise.resolve()) {

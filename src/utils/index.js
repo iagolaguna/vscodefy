@@ -13,3 +13,7 @@ export function getAuthContentFromData (data = {}) {
 export function validCache (data) {
   return data && (!!data.tokenType && !!data.accessToken && !!data.refreshToken)
 }
+
+export function isLogged (data) {
+  return validCache(data)
+}
