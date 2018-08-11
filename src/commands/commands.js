@@ -2,12 +2,12 @@ import { commands, window, Uri } from 'vscode'
 import axios from 'axios'
 import PubSub from 'pubsub-js'
 import { isLogged } from '../utils'
-const spotifyUrl = 'https://api.spotify.com/v1/me/player'
-const vscodefyServer = 'https://vscodefy.herokuapp.com/api'
+import { SPOTIFY_PLAYER_URL, OAUTH_SERVER_URL,OAUTH_SITE_URL, VSCODEFY_CACHE } from '../constant'
+
 async function next () {
   try {
     await axios
-      .post(`${spotifyUrl}/next`, {})
+      .post(`${SPOTIFY_PLAYER_URL}/next`, {})
   } catch (error) {
     console.error(error)
     handler(error, previous)
@@ -17,7 +17,7 @@ async function next () {
 async function previous () {
   try {
     await axios
-      .post(`${spotifyUrl}/previous`, {})
+      .post(`${SPOTIFY_PLAYER_URL}/previous`, {})
   } catch (error) {
     console.error(error)
     handler(error, previous)
@@ -27,7 +27,7 @@ async function previous () {
 async function play () {
   try {
     await axios
-      .put(`${spotifyUrl}/play`, {})
+      .put(`${SPOTIFY_PLAYER_URL}/play`, {})
   } catch (error) {
     console.error(error)
     handler(error, play)
@@ -37,7 +37,7 @@ async function play () {
 async function pause () {
   try {
     await axios
-      .put(`${spotifyUrl}/pause`, {})
+      .put(`${SPOTIFY_PLAYER_URL}/pause`, {})
   } catch (error) {
     console.error(error)
     handler(error, pause)
@@ -45,7 +45,7 @@ async function pause () {
 }
 
 async function getAvailableDevices () {
-  const { data: { devices } } = await axios.get(`${spotifyUrl}/devices`)
+  const { data: { devices } } = await axios.get(`${SPOTIFY_PLAYER_URL}/devices`)
   return devices
 }
 
@@ -56,7 +56,7 @@ function getCurrentTrackAsync () {
 }
 
 async function getCurrentTrack () {
-  const response = await axios.get(`${spotifyUrl}/currently-playing`, {})
+  const response = await axios.get(`${SPOTIFY_PLAYER_URL}/currently-playing`, {})
   if (response.status === 204) {
     PubSub.publish('current-track', {})
   }
@@ -75,12 +75,12 @@ async function getCurrentTrack () {
 }
 
 async function login () {
-  commands.executeCommand('vscode.open', Uri.parse('http://localhost:8080'))
+  commands.executeCommand('vscode.open', Uri.parse(OAUTH_SITE_URL))
 }
 
 async function getCode () {
   const code = await window.showInputBox()
-  if (!code || isLogged(this.globalState.get('cache'))) {
+  if (!code || isLogged(this.globalState.get(VSCODEFY_CACHE))) {
     return
   }
   const { data: authorization } = await authorize(code)
@@ -92,7 +92,7 @@ async function getCode () {
 }
 
 async function authorize (code) {
-  return axios.get(`${vscodefyServer}/authorize?code=${code}`)
+  return axios.get(`${OAUTH_SERVER_URL}/authorize?code=${code}`)
 }
 
 async function pickDevice () {
@@ -113,12 +113,12 @@ async function pickDevice () {
     await deviceNotFound()
     return false
   }
-  await axios.put(spotifyUrl, { 'device_ids': [device.id] })
+  await axios.put(SPOTIFY_PLAYER_URL, { 'device_ids': [device.id] })
   return true
 }
 
 async function refreshToken (refreshToken) {
-  return axios.get(`${vscodefyServer}/refreshToken?refreshToken=${refreshToken}`)
+  return axios.get(`${OAUTH_SERVER_URL}/refreshToken?refreshToken=${refreshToken}`)
 }
 
 async function handler (error, callback = () => Promise.resolve()) {

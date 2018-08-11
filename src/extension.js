@@ -1,61 +1,48 @@
 import 'babel-polyfill'
+import axios from 'axios'
 import PubSub from 'pubsub-js'
+import axiosConfig from './axios-config'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
 import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice } from './commands/commands'
 import { getAuthContentFromData, validCache } from './utils'
-import axios from 'axios'
-import axiosConfig from './axios-config'
+import { VSCODEFY_CACHE } from './constant'
+import { stat } from 'fs';
 
 let refreshStatusId
 let allStatusBar
 let loginStatusBar
 let configureStatusBar
+
 function logout () {
-  if (!validCache(this.globalState.get('cache'))) {
+  if (!validCache(this.globalState.get(VSCODEFY_CACHE))) {
     return
   }
   clearInterval(refreshStatusId)
-  this.globalState.update('cache', null)
+  this.globalState.update(VSCODEFY_CACHE, null)
   allStatusBar.map(status => status.dispose())
-  loginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
-  loginStatusBar.text = '$(sign-in) Login'
-  loginStatusBar.command = 'vscodefy.login'
-  loginStatusBar.tooltip = 'Login on Spotify'
-  loginStatusBar.show()
-  configureStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 10)
-  configureStatusBar.text = '$(gear) Configure'
-  configureStatusBar.command = 'vscodefy.getCode'
-  configureStatusBar.tooltip = 'Configure OAuth Spotify Code'
-  configureStatusBar.show()
+  const initialButtons = createInitialButtons()
+  loginStatusBar = initialButtons.loginStatusBar
+  configureStatusBar = initialButtons.configureStatusBar
   this.subscriptions.push(Disposable.from(loginStatusBar, configureStatusBar))
 }
 
-function activate (context) {
+export function activate (context) {
   axiosConfig(context)
 
   const reference = commandsRegistered
     .map(({ command, action }) => commands.registerCommand(command, action, context))
 
-  loginStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 11)
-  loginStatusBar.text = '$(sign-in) Login'
-  loginStatusBar.command = 'vscodefy.login'
-  loginStatusBar.tooltip = 'Login on Spotify'
-  loginStatusBar.show()
-
-  configureStatusBar = window.createStatusBarItem(StatusBarAlignment.Left, 10)
-  configureStatusBar.text = '$(gear) Configure'
-  configureStatusBar.command = 'vscodefy.getCode'
-  configureStatusBar.tooltip = 'Configure OAuth Spotify Code'
-  configureStatusBar.show()
-
+  const initialButtons = createInitialButtons()
+  loginStatusBar = initialButtons.loginStatusBar
+  configureStatusBar = initialButtons.configureStatusBar
   PubSub.subscribe('signIn', (message, data) => {
     const authContent = getAuthContentFromData(data)
-    context.globalState.update('cache', authContent)
+    context.globalState.update(VSCODEFY_CACHE, authContent)
     setup(authContent, context)
   })
 
   context.subscriptions.push(Disposable.from(...reference, loginStatusBar, configureStatusBar))
-  const cache = context.globalState.get('cache')
+  const cache = context.globalState.get(VSCODEFY_CACHE)
   if (validCache(cache)) {
     setup(cache, context)
   }
@@ -104,10 +91,18 @@ function setup (authContent, context) {
   allStatusBar = [...StatusBarButtons, statusCurrentMusic]
   context.subscriptions.push(Disposable.from(...allStatusBar))
 }
-export {
-  activate
+
+function createInitialButtons () {
+  const loginStatusBar = createStatusBarItem({ priority: 11, text: '$(sign-in) Login', command: 'vscodefy.login', tooltip: 'Login on Spotify' })
+  const configureStatusBar = createStatusBarItem({ priority: 10, text: '$(gear) Configure', command: 'vscodefy.getCode', tooltip: 'Configure OAuth Spotify Code' })
+  return { loginStatusBar, configureStatusBar }
 }
 
+function createStatusBarItem ({ priority, text, command, tooltip }) {
+  const statusBar = window.createStatusBarItem(StatusBarAlignment.Left, priority)
+  Object.assign(statusBar, text, command, tooltip)
+  statusBar.show()
+}
 const buttonsInfo = [
   {
     id: 'next',
