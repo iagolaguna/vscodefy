@@ -6,7 +6,6 @@ import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
 import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice } from './commands/commands'
 import { getAuthContentFromData, validCache } from './utils'
 import { VSCODEFY_CACHE } from './constant'
-import { stat } from 'fs';
 
 let refreshStatusId
 let allStatusBar
@@ -100,8 +99,11 @@ function createInitialButtons () {
 
 function createStatusBarItem ({ priority, text, command, tooltip }) {
   const statusBar = window.createStatusBarItem(StatusBarAlignment.Left, priority)
-  Object.assign(statusBar, text, command, tooltip)
+  statusBar.text = text
+  statusBar.command = command
+  statusBar.tooltip = tooltip
   statusBar.show()
+  return statusBar
 }
 const buttonsInfo = [
   {
