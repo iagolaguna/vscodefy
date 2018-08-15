@@ -1,14 +1,34 @@
 {
   "name": "vscodefy",
   "displayName": "vscodefy",
-  "description": "",
+  "description": "Extesion to control spotify",
   "version": "0.0.1",
+  "icon": "img/icon.png",
+  "license": "SEE LICENSE IN LICENSE",
   "publisher": "vscode-spotify",
+  "author": {
+    "name": "Iago Leonardo Laguna",
+    "email": "iagolaguna.83@gmail.com",
+    "url": "https://github.com/iagolaguna"
+  },
   "engines": {
     "vscode": "^1.25.0"
   },
+  "galleryBanner": {
+    "theme": "light",
+    "color": "black"
+  },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "spotify",
+    "player",
+    "music",
+    "sound",
+    "mp3",
+    "mp4",
+    "steaming"
   ],
   "activationEvents": [
     "*"
