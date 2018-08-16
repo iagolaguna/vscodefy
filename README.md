@@ -17,6 +17,18 @@ Use Spotify inside vscode. Provides integration with Spotify Web API and remote-
 # Usage
 ![How to use](/assets/usage.gif)
 
+# Features
+
+| Feature                      | macOS         | Linux                        | Windows                      |
+| ---------------------------- |:-------------:| :--------------------------- | :--------------------------- |
+| Show current song            | ✅            | ✅                            | ✅                            |
+| Play Next Song               | ✅            | ✅                            | ✅                            |
+| Play Previous Song           | ✅            | ✅                            | ✅                            |
+| Play                         | ✅            | ✅                            | ✅                            |
+| Pause                        | ✅            | ✅                            | ✅                            |
+| Play Pause                   | ✅            | ✅                            | ✅                            |
+| Available Devices            | ✅            | ✅                            | ✅                            |
+
 # License
 
 This project is under the MIT license.
