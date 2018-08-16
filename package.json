@@ -11,6 +11,14 @@
     "email": "iagolaguna.83@gmail.com",
     "url": "https://github.com/iagolaguna"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iagolaguna/vscodefy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iagolaguna/vscodefy/issues"
+  },
+  "homepage": "https://github.com/iagolaguna/vscodefy#readme",
   "engines": {
     "vscode": "^1.25.0"
   },
@@ -26,9 +34,7 @@
     "player",
     "music",
     "sound",
-    "mp3",
-    "mp4",
-    "steaming"
+    "mp4"
   ],
   "activationEvents": [
     "*"
