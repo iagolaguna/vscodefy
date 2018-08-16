@@ -1,11 +1,11 @@
 {
   "name": "vscodefy",
-  "displayName": "vscodefy",
-  "description": "Extesion to control spotify",
+  "displayName": "Vscodefy",
+  "description": "Use Spotify inside vscode in whatever platform.",
   "version": "0.0.1",
   "icon": "img/icon.png",
   "license": "SEE LICENSE IN LICENSE",
-  "publisher": "vscode-spotify",
+  "publisher": "iagolaguna",
   "author": {
     "name": "Iago Leonardo Laguna",
     "email": "iagolaguna.83@gmail.com",
