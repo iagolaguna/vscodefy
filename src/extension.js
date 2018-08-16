@@ -11,6 +11,9 @@ let refreshStatusId
 let allStatusBar
 let loginStatusBar
 let configureStatusBar
+export function deactivate () {
+  logout()
+}
 
 function logout () {
   if (!validCache(this.globalState.get(VSCODEFY_CACHE))) {
@@ -26,6 +29,8 @@ function logout () {
 }
 
 export function activate (context) {
+  console.info('Vscodefy Activated')
+  window.showInformationMessage('Vscodefy Started')
   axiosConfig(context)
 
   const reference = commandsRegistered

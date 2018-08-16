@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/iagolaguna/vscodefy#readme",
   "engines": {
-    "vscode": "^1.25.0"
+    "vscode": "^1.26.0"
   },
   "galleryBanner": {
     "theme": "light",
@@ -78,31 +78,31 @@
   },
   "scripts": {
     "linter": "eslint src",
-    "build": "babel src --source-maps -D -d dist",
+    "build": "babel src -D -d dist",
+    "dev": "babel src --source-maps -D -d dist",
     "vscode:prepublish": "npm run build",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.42",
-    "@types/node": "^7.0.43",
+    "@types/node": "^7.0.69",
+    "eslint": "^4.11.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "eslint": "^4.11.0",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.18"
-  },
-  "dependencies": {
     "axios": "^0.18.0",
     "pubsub-js": "^1.6.0",
-    "rxjs": "^6.2.2"
+    "rxjs": "^6.2.2",
+    "vscode": "^1.1.21"
   }
 }
