@@ -1,6 +1,6 @@
-# vscodefy README
-
-This is the README for your extension "vscodefy". After writing up a brief description, we recommend including the following sections.
+# vscodefy
+*BETA*
+Use Spotify inside vscode. Provides integration with Spotify Web API and remote-control resources
 
 ## Features
 
