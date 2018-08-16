@@ -29,8 +29,6 @@ function logout () {
 }
 
 export function activate (context) {
-  console.info('Vscodefy Activated')
-  window.showInformationMessage('Vscodefy Started')
   axiosConfig(context)
 
   const reference = commandsRegistered
