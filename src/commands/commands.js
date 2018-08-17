@@ -92,9 +92,7 @@ async function getCode () {
 }
 
 async function authorize (code) {
-  const fullurl = `${OAUTH_SERVER_URL}/authorize?code=${code}`
-  window.showInformationMessage(fullurl)
-  return axios.get(fullurl)
+  return axios.get(`${OAUTH_SERVER_URL}/authorize?code=${code}`)
 }
 
 async function pickDevice () {
