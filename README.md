@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/iagolaguna/vscodefy)
 
-# BETA
+# BETA : **Only for Spotify Premium Users**
 Use Spotify inside vscode. Provides integration with Spotify Web API and remote-control resources
 
 # Table of contents
