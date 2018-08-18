@@ -2,7 +2,7 @@ import { commands, window, Uri } from 'vscode'
 import axios from 'axios'
 import PubSub from 'pubsub-js'
 import { isLogged } from '../utils'
-import { SPOTIFY_PLAYER_URL, OAUTH_SERVER_URL,OAUTH_SITE_URL, VSCODEFY_CACHE } from '../constant'
+import { SPOTIFY_PLAYER_URL, OAUTH_SERVER_URL, OAUTH_SITE_URL, VSCODEFY_CACHE } from '../constant'
 
 async function next () {
   try {
@@ -59,6 +59,7 @@ async function getCurrentTrack () {
   const response = await axios.get(`${SPOTIFY_PLAYER_URL}/currently-playing`, {})
   if (response.status === 204) {
     PubSub.publish('current-track', {})
+    return
   }
 
   const {

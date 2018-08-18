@@ -5,6 +5,11 @@ import { VSCODEFY_CACHE } from './constant'
 
 function axiosConfig (context) {
   axios.interceptors.response.use(null, async error => {
+    console.log(error)
+    if (!error || !error.config || !error.response) {
+      return Promise.reject(error)
+    }
+
     const { config: { url, method, data }, response: { status } } = error
     if (status !== 401 || url.includes('refreshToken')) {
       return Promise.reject(error)
