@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/iagolaguna/vscodefy#readme",
   "engines": {
-    "vscode": "^1.26.0"
+    "vscode": "^1.20.0"
   },
   "galleryBanner": {
     "theme": "light",
