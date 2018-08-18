@@ -2,7 +2,7 @@
   "name": "vscodefy",
   "displayName": "Vscodefy",
   "description": "Use Spotify inside vscode in whatever platform.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "icon": "assets/icon.png",
   "license": "SEE LICENSE IN LICENSE",
   "publisher": "iagolaguna",
