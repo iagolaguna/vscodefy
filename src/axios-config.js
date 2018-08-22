@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { Agent } from 'https'
+import https from 'https'
 import { refreshToken } from './commands/commands'
 import { getAuthContentFromData } from './utils'
 import { VSCODEFY_CACHE } from './constant'
 
 function axiosConfig (context) {
-  axios.defaults.httpsAgent = new Agent({
+  axios.defaults.httpsAgent = new https.Agent({
     rejectUnauthorized: false
   })
 

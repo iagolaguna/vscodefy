@@ -89,7 +89,7 @@ function setup (authContent, context) {
   })
   PubSub.publishSync('current-track', {})
 
-  refreshStatusId = setInterval(() => getCurrentTrackAsync(), 5000)
+  refreshStatusId = setInterval(() => getCurrentTrackAsync(), 10000)
   allStatusBar = [...StatusBarButtons, statusCurrentMusic]
   context.subscriptions.push(Disposable.from(...allStatusBar))
 }
