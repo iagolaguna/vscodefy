@@ -1,14 +1,9 @@
 import axios from 'axios'
-import https from 'https'
 import { refreshToken } from './commands/commands'
 import { getAuthContentFromData } from './utils'
 import { VSCODEFY_CACHE } from './constant'
 
 function axiosConfig (context) {
-  axios.defaults.httpsAgent = new https.Agent({
-    rejectUnauthorized: false
-  })
-
   axios.interceptors.response.use(null, async error => {
     console.log(error)
     if (!error || !error.config || !error.response) {
