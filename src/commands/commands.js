@@ -2,7 +2,7 @@ import { commands, window, Uri } from 'vscode'
 import axios from 'axios'
 import PubSub from 'pubsub-js'
 import { isLogged } from '../utils'
-import { SPOTIFY_PLAYER_URL, OAUTH_SERVER_URL, OAUTH_SITE_URL, VSCODEFY_CACHE } from '../constant'
+import { SPOTIFY_PLAYER_URL, OAUTH_SERVER_URL, OAUTH_SITE_URL, VSCODEFY_CACHE, USER_PLAYLISTS_URL } from '../constant'
 
 async function next () {
   try {
@@ -131,6 +131,60 @@ async function handler (error, callback = () => Promise.resolve()) {
   }
 }
 
+async function getPlaybackInfo () {
+  return await axios.get(SPOTIFY_PLAYER_URL)
+}
+
+async function putVolume(value) {
+  try {
+    await axios
+      .put(`${SPOTIFY_PLAYER_URL}/volume?volume_percent=${value}`)
+    window.setStatusBarMessage(`Volume: ${value}%`, 2000)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function decreaseVolume () {
+  const { data: currentPlayback } = await getPlaybackInfo()
+  if (!currentPlayback) return;
+  const decreasedVolume = currentPlayback.device.volume_percent < 10
+    ? 0 : currentPlayback.device.volume_percent - 10
+  putVolume(decreasedVolume)
+}
+
+async function increaseVolume () {
+  const { data: currentPlayback } = await getPlaybackInfo()
+  if (!currentPlayback) return;
+  const increasedVolume = currentPlayback.device.volume_percent > 90
+    ? 100 : currentPlayback.device.volume_percent + 10
+  putVolume(increasedVolume)
+}
+
+async function getUserPlaylists () {
+  const { data: userPlaylistsData } = await axios.get(`${USER_PLAYLISTS_URL}`, {})
+  const basicPlaylistsData = userPlaylistsData.items.map(playlist =>
+    Object.assign({
+      description: `Owner: ${playlist.owner.display_name}`,
+      details: playlist.uri,
+      label: playlist.name
+    })
+  )
+  return basicPlaylistsData
+}
+
+async function changePlaylist () {
+  const playlists = await getUserPlaylists()
+  const selectedPlaylist = await window.showQuickPick(playlists)
+  if (!selectedPlaylist) return
+  try {
+    await axios.put(`${SPOTIFY_PLAYER_URL}/play`, { context_uri: selectedPlaylist.details })
+    window.showInformationMessage(`Playlist currently playing: ${selectedPlaylist.label}`)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 async function handlerNotFoundDevice () {
   return pickDevice()
 }
@@ -144,5 +198,9 @@ export {
   getCode,
   refreshToken,
   pickDevice,
-  getCurrentTrackAsync
+  getCurrentTrackAsync,
+  decreaseVolume,
+  increaseVolume,
+  getUserPlaylists,
+  changePlaylist
 }

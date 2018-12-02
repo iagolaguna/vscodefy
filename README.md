@@ -15,7 +15,11 @@ Use Spotify inside vscode. Provides integration with Spotify Web API and remote-
 * [License](#license)
 
 # Usage
+### Login
 ![How to use](/assets/usage.gif)
+
+### Changing sound volume and playlists
+![Changing volume and playlist](/assets/sound_and_playlists.gif)
 
 # Features
 
@@ -28,6 +32,8 @@ Use Spotify inside vscode. Provides integration with Spotify Web API and remote-
 | Pause                        | ✅            | ✅                            | ✅                            |
 | Play Pause                   | ✅            | ✅                            | ✅                            |
 | Available Devices            | ✅            | ✅                            | ✅                            |
+| Change Song Volume           | ✅            | ✅                            | ✅                            |
+| Change Playlist              | ✅            | ✅                            | ✅                            |
 
 # License
 

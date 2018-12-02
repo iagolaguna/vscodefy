@@ -3,7 +3,7 @@ import axios from 'axios'
 import PubSub from 'pubsub-js'
 import axiosConfig from './axios-config'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
-import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice } from './commands/commands'
+import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice, decreaseVolume, increaseVolume, changePlaylist, changeVolume } from './commands/commands'
 import { getAuthContentFromData, validCache } from './utils'
 import { VSCODEFY_CACHE } from './constant'
 
@@ -110,32 +110,53 @@ function createStatusBarItem ({ priority, text, command, tooltip }) {
 }
 const buttonsInfo = [
   {
+    id: 'volume-up',
+    text: ' $(plus) ',
+    priority: 8,
+    tooltip: 'Increase volume',
+    buttonCommand: 'vscodefy.increase_volume'
+  },
+  {
+    id: 'volume-down',
+    text: ' $(dash) ',
+    priority: 9,
+    tooltip: 'Decrease volume',
+    buttonCommand: 'vscodefy.decrease_volume'
+  },
+  {
     id: 'next',
     text: ' $(chevron-right) ',
-    priority: 8,
+    priority: 10,
     tooltip: 'Next',
     buttonCommand: 'vscodefy.next'
   },
   {
     id: 'play',
     text: ' $(triangle-right) ',
-    priority: 9,
+    priority: 11,
     tooltip: 'Play',
     buttonCommand: 'vscodefy.play'
   },
   {
     id: 'pause',
     text: ' $(primitive-square) ',
-    priority: 10,
+    priority: 12,
     tooltip: 'Pause',
     buttonCommand: 'vscodefy.pause'
   },
   {
     id: 'previous',
     text: ' $(chevron-left) ',
-    priority: 11,
+    priority: 13,
     tooltip: 'Previous',
     buttonCommand: 'vscodefy.previous'
+  },
+  {
+    id: 'change-playlist',
+    text: ' $(list-unordered) ',
+    priority: 14,
+    tooltip: 'Change playlist',
+    buttonCommand: 'vscodefy.change_playlist'
   }
 ]
 
@@ -171,5 +192,17 @@ const commandsRegistered = [
   {
     command: 'vscodefy.logout',
     action: logout
+  },
+  {
+    command: 'vscodefy.decrease_volume',
+    action: decreaseVolume
+  },
+  {
+    command: 'vscodefy.increase_volume',
+    action: increaseVolume
+  },
+  {
+    command: 'vscodefy.change_playlist',
+    action: changePlaylist
   }
 ]
