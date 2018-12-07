@@ -73,6 +73,18 @@
       {
         "command": "vscodefy.logout",
         "title": "Spotify: Logout"
+      },
+      {
+        "command": "vscodefy.decrease_volume",
+        "title": "Spotify: Decrease volume"
+      },
+      {
+        "command": "vscodefy.increase_volume",
+        "title": "Spotify: Increase volume"
+      },
+      {
+        "command": "vscodefy.change_playlist",
+        "title": "Spotify: Change playlist"
       }
     ]
   },
