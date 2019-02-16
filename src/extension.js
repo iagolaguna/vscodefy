@@ -3,7 +3,7 @@ import axios from 'axios'
 import PubSub from 'pubsub-js'
 import axiosConfig from './axios-config'
 import { window, commands, Disposable, StatusBarAlignment } from 'vscode'
-import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice, decreaseVolume, increaseVolume, changePlaylist, changeVolume } from './commands/commands'
+import { play, pause, next, previous, login, getCode, getCurrentTrackAsync, pickDevice, changePlaylist } from './commands/commands'
 import { getAuthContentFromData, validCache } from './utils'
 import { VSCODEFY_CACHE } from './constant'
 
@@ -110,20 +110,6 @@ function createStatusBarItem ({ priority, text, command, tooltip }) {
 }
 const buttonsInfo = [
   {
-    id: 'volume-up',
-    text: ' $(plus) ',
-    priority: 8,
-    tooltip: 'Increase volume',
-    buttonCommand: 'vscodefy.increase_volume'
-  },
-  {
-    id: 'volume-down',
-    text: ' $(dash) ',
-    priority: 9,
-    tooltip: 'Decrease volume',
-    buttonCommand: 'vscodefy.decrease_volume'
-  },
-  {
     id: 'next',
     text: ' $(chevron-right) ',
     priority: 10,
@@ -192,14 +178,6 @@ const commandsRegistered = [
   {
     command: 'vscodefy.logout',
     action: logout
-  },
-  {
-    command: 'vscodefy.decrease_volume',
-    action: decreaseVolume
-  },
-  {
-    command: 'vscodefy.increase_volume',
-    action: increaseVolume
   },
   {
     command: 'vscodefy.change_playlist',

@@ -131,36 +131,6 @@ async function handler (error, callback = () => Promise.resolve()) {
   }
 }
 
-async function getPlaybackInfo () {
-  return await axios.get(SPOTIFY_PLAYER_URL)
-}
-
-async function putVolume(value) {
-  try {
-    await axios
-      .put(`${SPOTIFY_PLAYER_URL}/volume?volume_percent=${value}`)
-    window.setStatusBarMessage(`Volume: ${value}%`, 2000)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-async function decreaseVolume () {
-  const { data: currentPlayback } = await getPlaybackInfo()
-  if (!currentPlayback) return;
-  const decreasedVolume = currentPlayback.device.volume_percent < 10
-    ? 0 : currentPlayback.device.volume_percent - 10
-  putVolume(decreasedVolume)
-}
-
-async function increaseVolume () {
-  const { data: currentPlayback } = await getPlaybackInfo()
-  if (!currentPlayback) return;
-  const increasedVolume = currentPlayback.device.volume_percent > 90
-    ? 100 : currentPlayback.device.volume_percent + 10
-  putVolume(increasedVolume)
-}
-
 async function getUserPlaylists () {
   const { data: userPlaylistsData } = await axios.get(`${USER_PLAYLISTS_URL}`, {})
   const basicPlaylistsData = userPlaylistsData.items.map(playlist =>
@@ -199,8 +169,6 @@ export {
   refreshToken,
   pickDevice,
   getCurrentTrackAsync,
-  decreaseVolume,
-  increaseVolume,
   getUserPlaylists,
   changePlaylist
 }

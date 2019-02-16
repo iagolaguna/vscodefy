@@ -32,7 +32,6 @@ Use Spotify inside vscode. Provides integration with Spotify Web API and remote-
 | Pause                        | ✅            | ✅                            | ✅                            |
 | Play Pause                   | ✅            | ✅                            | ✅                            |
 | Available Devices            | ✅            | ✅                            | ✅                            |
-| Change Song Volume           | ✅            | ✅                            | ✅                            |
 | Change Playlist              | ✅            | ✅                            | ✅                            |
 
 # License
