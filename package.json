@@ -100,7 +100,7 @@
     "eslint-plugin-standard": "^3.1.0"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "babel-polyfill": "^6.26.0",
     "pubsub-js": "^1.6.0",
     "vscode": "^1.1.21"
