@@ -1,108 +1,93 @@
 {
-  "name": "vscodefy",
-  "displayName": "Vscodefy",
-  "description": "Use Spotify inside vscode in whatever platform.",
-  "version": "0.0.11",
-  "icon": "assets/icon.png",
-  "license": "SEE LICENSE IN LICENSE",
-  "publisher": "iagolaguna",
-  "author": {
-    "name": "Iago Leonardo Laguna",
-    "email": "iagolaguna.83@gmail.com",
-    "url": "https://github.com/iagolaguna"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/iagolaguna/vscodefy.git"
-  },
-  "bugs": {
-    "url": "https://github.com/iagolaguna/vscodefy/issues"
-  },
-  "homepage": "https://github.com/iagolaguna/vscodefy#readme",
-  "engines": {
-    "vscode": "^1.20.0"
-  },
-  "galleryBanner": {
-    "theme": "light",
-    "color": "black"
-  },
-  "categories": [
-    "Other"
-  ],
-  "keywords": [
-    "spotify",
-    "player",
-    "music",
-    "sound",
-    "mp4"
-  ],
-  "activationEvents": [
-    "*"
-  ],
-  "main": "./dist/extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "vscodefy.next",
-        "title": "Spotify: Play Next Song"
-      },
-      {
-        "command": "vscodefy.previous",
-        "title": "Spotify: Play Previous Song"
-      },
-      {
-        "command": "vscodefy.play",
-        "title": "Spotify: Play Song"
-      },
-      {
-        "command": "vscodefy.pause",
-        "title": "Spotify: Pause Song"
-      },
-      {
-        "command": "vscodefy.login",
-        "title": "Spotify: Login"
-      },
-      {
-        "command": "vscodefy.getCode",
-        "title": "Spotify: Set OAuth Code"
-      },
-      {
-        "command": "vscodefy.pickDevice",
-        "title": "Spotify: Pick a device"
-      },
-      {
-        "command": "vscodefy.logout",
-        "title": "Spotify: Logout"
-      }
-    ]
-  },
-  "scripts": {
-    "linter": "eslint src",
-    "build": "babel src -D -d dist",
-    "dev": "babel src --source-maps -D -d dist",
-    "vscode:prepublish": "npm run build",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test"
-  },
-  "devDependencies": {
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^7.0.69",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "eslint": "^4.11.0",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0"
-  },
-  "dependencies": {
-    "axios": "^0.18.1",
-    "babel-polyfill": "^6.26.0",
-    "pubsub-js": "^1.6.0",
-    "vscode": "^1.1.21"
-  }
+	"name": "vscodefy",
+	"displayName": "Vscodefy",
+	"description": "Use Spotify inside vscode in whatever platform.",
+	"version": "0.0.11",
+	"icon": "assets/icon.png",
+	"license": "SEE LICENSE IN LICENSE",
+	"publisher": "iagolaguna",
+	"author": {
+	  "name": "Iago Leonardo Laguna",
+	  "email": "iagolaguna.83@gmail.com",
+	  "url": "https://github.com/iagolaguna"
+	},
+	"repository": {
+	  "type": "git",
+	  "url": "https://github.com/iagolaguna/vscodefy.git"
+	},
+	"bugs": {
+	  "url": "https://github.com/iagolaguna/vscodefy/issues"
+	},
+	"homepage": "https://github.com/iagolaguna/vscodefy#readme",
+	"engines": {
+		"vscode": "^1.38.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"keywords": [
+		"spotify",
+		"player",
+		"music",
+		"sound",
+		"mp4"
+	  ],
+	"activationEvents": [
+		"*"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+		  {
+			"command": "vscodefy.next",
+			"title": "Spotify: Play Next Song"
+		  },
+		  {
+			"command": "vscodefy.previous",
+			"title": "Spotify: Play Previous Song"
+		  },
+		  {
+			"command": "vscodefy.play",
+			"title": "Spotify: Play Song"
+		  },
+		  {
+			"command": "vscodefy.pause",
+			"title": "Spotify: Pause Song"
+		  },
+		  {
+			"command": "vscodefy.login",
+			"title": "Spotify: Login"
+		  },
+		  {
+			"command": "vscodefy.getCode",
+			"title": "Spotify: Set OAuth Code"
+		  },
+		  {
+			"command": "vscodefy.pickDevice",
+			"title": "Spotify: Pick a device"
+		  },
+		  {
+			"command": "vscodefy.logout",
+			"title": "Spotify: Logout"
+		  }
+		]
+	  },
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "yarn run compile",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^5.2.6",
+		"@types/node": "^10.12.21",
+		"@types/vscode": "^1.38.0",
+		"glob": "^7.1.4",
+		"mocha": "^6.1.4",
+		"typescript": "^3.3.1",
+		"tslint": "^5.12.1",
+		"vscode-test": "^1.2.0"
+	}
 }
