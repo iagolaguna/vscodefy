@@ -7,16 +7,16 @@
 	"license": "SEE LICENSE IN LICENSE",
 	"publisher": "iagolaguna",
 	"author": {
-	  "name": "Iago Leonardo Laguna",
-	  "email": "iagolaguna.83@gmail.com",
-	  "url": "https://github.com/iagolaguna"
+		"name": "Iago Leonardo Laguna",
+		"email": "iagolaguna.83@gmail.com",
+		"url": "https://github.com/iagolaguna"
 	},
 	"repository": {
-	  "type": "git",
-	  "url": "https://github.com/iagolaguna/vscodefy.git"
+		"type": "git",
+		"url": "https://github.com/iagolaguna/vscodefy.git"
 	},
 	"bugs": {
-	  "url": "https://github.com/iagolaguna/vscodefy/issues"
+		"url": "https://github.com/iagolaguna/vscodefy/issues"
 	},
 	"homepage": "https://github.com/iagolaguna/vscodefy#readme",
 	"engines": {
@@ -31,47 +31,51 @@
 		"music",
 		"sound",
 		"mp4"
-	  ],
+	],
 	"activationEvents": [
 		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-		  {
-			"command": "vscodefy.next",
-			"title": "Spotify: Play Next Song"
-		  },
-		  {
-			"command": "vscodefy.previous",
-			"title": "Spotify: Play Previous Song"
-		  },
-		  {
-			"command": "vscodefy.play",
-			"title": "Spotify: Play Song"
-		  },
-		  {
-			"command": "vscodefy.pause",
-			"title": "Spotify: Pause Song"
-		  },
-		  {
-			"command": "vscodefy.login",
-			"title": "Spotify: Login"
-		  },
-		  {
-			"command": "vscodefy.getCode",
-			"title": "Spotify: Set OAuth Code"
-		  },
-		  {
-			"command": "vscodefy.pickDevice",
-			"title": "Spotify: Pick a device"
-		  },
-		  {
-			"command": "vscodefy.logout",
-			"title": "Spotify: Logout"
-		  }
+			{
+				"command": "extension.helloWorld",
+				"title": "Hello world!"
+			},
+			{
+				"command": "vscodefy.next",
+				"title": "Spotify: Play Next Song"
+			},
+			{
+				"command": "vscodefy.previous",
+				"title": "Spotify: Play Previous Song"
+			},
+			{
+				"command": "vscodefy.play",
+				"title": "Spotify: Play Song"
+			},
+			{
+				"command": "vscodefy.pause",
+				"title": "Spotify: Pause Song"
+			},
+			{
+				"command": "vscodefy.login",
+				"title": "Spotify: Login"
+			},
+			{
+				"command": "vscodefy.getCode",
+				"title": "Spotify: Set OAuth Code"
+			},
+			{
+				"command": "vscodefy.pickDevice",
+				"title": "Spotify: Pick a device"
+			},
+			{
+				"command": "vscodefy.logout",
+				"title": "Spotify: Logout"
+			}
 		]
-	  },
+	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
@@ -86,8 +90,11 @@
 		"@types/vscode": "^1.38.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",
-		"typescript": "^3.3.1",
 		"tslint": "^5.12.1",
+		"typescript": "^3.3.1",
 		"vscode-test": "^1.2.0"
+	},
+	"dependencies": {
+		"rxjs": "^6.5.3"
 	}
 }
