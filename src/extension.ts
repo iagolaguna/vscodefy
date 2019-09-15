@@ -1,8 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { Observable, Subscriber, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { fromCommand } from './utils/rxjs';
 
 const unsubscribe$ = new Subject<void>();
 // this method is called when your extension is activated
@@ -33,19 +34,4 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
 	unsubscribe$.unsubscribe();
-}
-
-
-function fromCommand<T>(command: string): Observable<T> {
-	return new Observable<T>(subscriber => {
-		function handler(e: T) {
-			subscriber.next(e);
-		}
-		setupSubscription<T>(command, handler, subscriber);
-	});
-}
-
-function setupSubscription<T>(command: string, handler: (...args: any[]) => void, subscriber: Subscriber<T>) {
-	const { dispose: unsubscribe } = vscode.commands.registerCommand(command, handler);
-	subscriber.add(unsubscribe);
 }
