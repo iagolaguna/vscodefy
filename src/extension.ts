@@ -55,6 +55,37 @@ export function activate(context: vscode.ExtensionContext) {
 				console.error(error);
 			}
 		})
+	fromCommand('vscodefy.pause')
+		.pipe(takeUntil(unsubscribe$))
+		.subscribe(async () => {
+			try {
+				await axios.put(`${SPOTIFY_PLAYER_URL}/pause`, {})
+			} catch (error) {
+				console.error(error);
+			}
+		})
+
+	fromCommand('vscodefy.next')
+		.pipe(takeUntil(unsubscribe$))
+		.subscribe(async () => {
+			try {
+				await axios.post(`${SPOTIFY_PLAYER_URL}/next`, {})
+			} catch (error) {
+				console.error(error);
+			}
+		})
+
+	fromCommand('vscodefy.previous')
+		.pipe(takeUntil(unsubscribe$))
+		.subscribe(async () => {
+			try {
+				await axios.post(`${SPOTIFY_PLAYER_URL}/previous`, {})
+			} catch (error) {
+				console.error(error);
+			}
+		})
+
+
 }
 
 const pickDevice = async (): Promise<boolean> => {
