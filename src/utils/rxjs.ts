@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
 import { Observable, Subscriber } from "rxjs";
 
-export function fromCommand<T>(command: string): Observable<T> {
-	return new Observable<T>(subscriber => {
-		function handler(e: T) {
-			subscriber.next(e);
+export function fromCommand(command: string): Observable<void> {
+	return new Observable(subscriber => {
+		function handler() {
+			subscriber.next();
 		}
-		setupSubscription<T>(command, handler, subscriber);
+		setupSubscription(command, handler, subscriber);
 	});
 }
 
-function setupSubscription<T>(command: string, handler: (...args: any[]) => void, subscriber: Subscriber<T>) {
+function setupSubscription(command: string, handler: (...args: any[]) => void, subscriber: Subscriber<void>) {
 	const { dispose: unsubscribe } = vscode.commands.registerCommand(command, handler);
 	subscriber.add(unsubscribe);
 }
