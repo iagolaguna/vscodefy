@@ -5,10 +5,7 @@
 		"no-duplicate-variable": true,
 		"curly": true,
 		"class-name": true,
-		"semicolon": [
-			true,
-			"always"
-		],
+		"semicolon": false,
 		"triple-equals": true
 	},
 	"defaultSeverity": "warning"
